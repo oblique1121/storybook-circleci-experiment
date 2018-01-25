@@ -6,4 +6,27 @@ jobs:
     working_directory: ~/repo
     steps:
       - checkout
-      - run: echo "hello world"
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run: yarn install
+      - save_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - node_modules
+      - run: yarn build-storybook
+      - store_artifacts:
+          path: storybook-static
+          destination: storybook
+      - run:
+          command: |
+            if [ -n "$CIRCLE_PULL_REQUEST" ]; then
+              PULL_REQUEST_ID="${CIRCLE_PULL_REQUEST##*/pull/}"
+              STORYBOOK_URL="$CIRCLE_BUILD_URL/artifacts/$CIRCLE_NODE_INDEX/$CIRCLE_ARTIFACTS/storybook/index.html"
+              curl -X POST \
+                   -H "Authorization: bearer $GITHUB_API_TOKEN" \
+                   -H "Accept: application/vnd.github.v3.html+json" \
+                   -d "{\"body\":\"[Storybook] Created ([view stories]($STORYBOOK_URL))\"}" \
+                   "https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/issues/$PULL_REQUEST_ID/comments"
+            else
+              echo "[Storybook] Skip post comment"
+            fi

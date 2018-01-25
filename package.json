@@ -1,0 +1,28 @@
+{
+  "name": "storybook-circleci-experiment",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:oblique1121/storybook-circleci-experiment.git",
+  "author": "oblique1121 <oblique1121@hotmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "prebuild": "run-s clean",
+    "build": "tsc",
+    "clean": "rm -rf lib/*",
+    "storybook": "start-storybook -p 6001"
+  },
+  "dependencies": {
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0"
+  },
+  "devDependencies": {
+    "@storybook/cli": "^3.3.10",
+    "@storybook/react": "^3.3.10",
+    "@types/react": "^16.0.34",
+    "@types/react-dom": "^16.0.3",
+    "@types/storybook__react": "^3.0.6",
+    "awesome-typescript-loader": "^3.4.1",
+    "npm-run-all": "^4.1.2",
+    "typescript": "^2.6.2"
+  }
+}
